@@ -2,6 +2,9 @@
 
 namespace Shoplo;
 
+use Shoplo\Guzzle\GuzzleAdapter;
+use SSOAuth\SSOAuthClient;
+
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 
@@ -154,152 +157,149 @@ class ShoploApi
      */
     public $shop_domain = null;
 
-    public function __construct($config, $authStore=null, $disableSession=false)
+    /**
+     * @var SSOAuthClient
+     */
+    private $ssoAuthClient;
+
+    private $shoploStoreAdapterInterface;
+
+    public function __construct($config, $authStore = null, $disableSession = false)
     {
-        if ( !$disableSession && !session_id() )
-        {
+        if (!$disableSession && !session_id()) {
             throw new ShoploException('Session not initialized');
         }
-        if ( !isset($config['api_key']) || empty($config['api_key']) )
-        {
+        if (empty($config['publicKey'])) {
             throw new ShoploException('Invalid Api Key');
-        }
-        elseif ( !isset($config['secret_key']) || empty($config['secret_key']) )
-        {
+        } elseif (empty($config['secretKey'])) {
             throw new ShoploException('Invalid Api Key');
-        }
-        elseif ( !isset($config['callback_url']) || empty($config['callback_url']) )
-        {
+        } elseif (empty($config['callbackUrl'])) {
             throw new ShoploException('Invalid Callback Url');
         }
 
-        $this->api_url = isset($config['api_url']) && $config['api_url'] ? $config['api_url'] : 'http://api.shoplo.com';
+        $this->api_url = !empty($config['apiBaseUrl']) ? $config['apiBaseUrl'] : 'http://api.shoplo.com';
 
-        $this->api_key    = $config['api_key'];
-        $this->secret_key = $config['secret_key'];
+        $this->api_key = $config['publicKey'];
+        $this->secret_key = $config['secretKey'];
 
-        if( isset($_GET['shop_domain']) )
-        {
+        if (isset($_GET['shop_domain'])) {
             $this->shop_domain = addslashes($_GET['shop_domain']);
         }
 
-        $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+        $this->callback_url = (false === strpos(
+                $config['callbackUrl'],
+                'http'
+            )) ? 'http://'.$config['callbackUrl'] : $config['callbackUrl'];
 
         $this->auth_store = AuthStore::getInstance($authStore);
+
+        $this->shoploStoreAdapterInterface = new GuzzleAdapter(
+            new \GuzzleHttp\Client(['base_uri' => $this->api_url])
+        );
+    }
+
+    /**
+     * @param $config
+     */
+    public function initSSOAuthClient($config)
+    {
+        $guzzleAuthConfig = [
+            'base_uri' => $config['authBaseUrl'],
+        ];
+
+        $guzzleAdapter = new \SSOAuth\Guzzle\GuzzleAdapter(
+            new \GuzzleHttp\Client($guzzleAuthConfig)
+        );
+        $this->ssoAuthClient = new \SSOAuth\SSOAuthClient(
+            $guzzleAdapter,
+            $config
+        );
     }
 
     public function getAuthorizeUrl()
     {
-        return $this->api_url . '/services/oauth/authorize';
+        return $this->api_url.'/services/oauth/authorize';
     }
 
-    public function initClient($token = null, $tokenSecret = null)
+    public function initClient($token = null, $appId = null)
     {
-        $client = $this->getClient($token, $tokenSecret);
-        $this->assets          = new Assets($client, $this->api_url);
-        $this->category        = new Category($client, $this->api_url);
-        $this->cart        	   = new Cart($client, $this->api_url);
-        $this->collection      = new Collection($client, $this->api_url);
-        $this->customer        = new Customer($client, $this->api_url);
-        $this->order           = new Order($client, $this->api_url);
-        $this->order_status    = new OrderStatus($client, $this->api_url);
-        $this->product         = new Product($client, $this->api_url);
-        $this->product_image   = new ProductImage($client, $this->api_url);
+        $client = $this->getClient($token, $appId);
+
+        $this->assets = new Assets($client, $this->api_url);
+        $this->category = new Category($client, $this->api_url);
+        $this->cart = new Cart($client, $this->api_url);
+        $this->collection = new Collection($client, $this->api_url);
+        $this->customer = new Customer($client, $this->api_url);
+        $this->order = new Order($client, $this->api_url);
+        $this->order_status = new OrderStatus($client, $this->api_url);
+        $this->product = new Product($client, $this->api_url);
+        $this->product_image = new ProductImage($client, $this->api_url);
         $this->product_variant = new ProductVariant($client, $this->api_url);
-        $this->vendor          = new Vendor($client, $this->api_url);
-        $this->shop            = new Shop($client, $this->api_url);
-        $this->webhook         = new Webhook($client, $this->api_url);
-        $this->theme           = new Theme($client, $this->api_url);
-        $this->page            = new Page($client, $this->api_url);
-        $this->shipping        = new Shipping($client, $this->api_url);
-        $this->checkout        = new Checkout($client, $this->api_url);
-        $this->voucher         = new Voucher($client, $this->api_url);
-        $this->promotion       = new Promotion($client, $this->api_url);
-        $this->user            = new User($client, $this->api_url);
-        $this->application_charge 	= new ApplicationCharge($client, $this->api_url);
-        $this->recurring_application_charge 	= new RecurringApplicationCharge($client, $this->api_url);
+        $this->vendor = new Vendor($client, $this->api_url);
+        $this->shop = new Shop($client, $this->api_url);
+        $this->webhook = new Webhook($client, $this->api_url);
+        $this->theme = new Theme($client, $this->api_url);
+        $this->page = new Page($client, $this->api_url);
+        $this->shipping = new Shipping($client, $this->api_url);
+        $this->checkout = new Checkout($client, $this->api_url);
+        $this->voucher = new Voucher($client, $this->api_url);
+        $this->promotion = new Promotion($client, $this->api_url);
+        $this->user = new User($client, $this->api_url);
+        $this->application_charge = new ApplicationCharge($client, $this->api_url);
+        $this->recurring_application_charge = new RecurringApplicationCharge($client, $this->api_url);
     }
 
     public function authorize($token, $tokenSecret)
     {
-        if ( $this->auth_store->authorize($token, $tokenSecret) )
-        {
-            $this->oauth_token        = $this->auth_store->getOAuthToken();
+        if ($this->auth_store->authorize($token, $tokenSecret)) {
+            $this->oauth_token = $this->auth_store->getOAuthToken();
             $this->oauth_token_secret = $this->auth_store->getOAuthTokenSecret();
-            $this->authorized         = true;
+            $this->authorized = true;
 
             return true;
         }
 
-        $this->authorized         = false;
+        $this->authorized = false;
+
         return false;
     }
 
     public function requestToken()
     {
-        $client = $this->getClient();
-
-        try
-        {
-            $response = $client->getRequestToken($this->api_url.SHOPLO_REQUEST_TOKEN_URI, $this->callback_url);
-        }
-        catch( \Exception $e )
-        {
-            throw new ShoploException($e->getMessage());
-        }
-
-        $client->setToken($response['oauth_token'], $response['oauth_token_secret']);
-
-        $_SESSION['oauth_token_secret'] = $response['oauth_token_secret'];
-
-        if( isset($_SESSION['shop_domain']) && $_SESSION['shop_domain'] )
-        {
-            $shopDomain = $_SESSION['shop_domain'];
-            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key).'&shop_domain='.$shopDomain;
-
-            unset($_SESSION['shop_domain']);
-        }
-        else
-            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
-
-        $response['login_url'] = $this->getAuthorizeUrl() . '?oauth_token='.rawurlencode($response['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
-        return $response;
-    }
-
-    public function accessToken( $oauthToken, $oauthTokenSecret, $oauthTokenVerifier )
-    {
-        //  STEP 2:  Get an access token
-        $client = $this->getClient($oauthToken, $oauthTokenSecret);
-
-        try
-        {
-            $response = $client->getAccessToken($this->api_url.SHOPLO_ACCESS_TOKEN_URI, null, $oauthTokenVerifier);
-        }
-        catch( \Exception $e )
-        {
-            throw new ShoploException($e->getMessage());
-        }
-
-        unset($_SESSION['oauth_token_secret']);
-
-        $this->oauth_token = $response['oauth_token'];
-        $this->oauth_token_secret = $response['oauth_token_secret'];
-
-        $this->auth_store->setAuthorizeData($response['oauth_token'], $response['oauth_token_secret']);
+        $response['login_url'] = $this->ssoAuthClient->requestToken(true);
 
         return $response;
     }
 
-    public function getClient($token=null, $tokenSecret=null)
+    public function accessToken($code)
     {
-        $token = !is_null($token) ? $token : ($this->oauth_token ? $this->oauth_token : '');
-        $tokenSecret = !is_null($tokenSecret) ? $tokenSecret: ($this->oauth_token_secret ? $this->oauth_token_secret : '');
+        $response = $this->ssoAuthClient->getAccessToken($code);
+        $this->auth_store->setAuthorizeData($response['access_token'], $response['refresh_token']);
 
-        $oauth = new \OAuth($this->api_key, $this->secret_key);
-        if( $token )
-            $oauth->setToken($token, $tokenSecret);
+        $this->oauth_token = $response['access_token'];
+        $this->oauth_token_secret = $response['refresh_token'];
 
-        return $oauth;
+        $this->shoploStoreAdapterInterface->setSSOAppId($_GET['app_id']);
+        $this->shoploStoreAdapterInterface->setAccessToken(
+            $response['access_token']
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param null $token
+     * @param null $appId
+     * @return \Shoplo\Guzzle\GuzzleAdapter
+     */
+    public function getClient($token = null, $appId = null)
+    {
+        if ($token) {
+            $this->shoploStoreAdapterInterface->setSSOAppId($appId);
+            $this->shoploStoreAdapterInterface->setAccessToken($token);
+        }
+
+        return $this->shoploStoreAdapterInterface;
     }
 
     public function getOAuthToken()
@@ -311,22 +311,22 @@ class ShoploApi
     {
         return $this->oauth_token_secret;
     }
-    
-    /**
-	 * @return string
-	 */
-	public function getApiKey()
-	{
-		return $this->api_key;
-	}
 
-	/**
-	 * @return string
-	 */
-	public function getSecretKey()
-	{
-		return $this->secret_key;
-	}
+    /**
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->api_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecretKey()
+    {
+        return $this->secret_key;
+    }
 
     public function __destruct()
     {
@@ -350,6 +350,4 @@ class ShoploApi
         unset($this->application_charge);
         unset($this->recurring_application_charge);
     }
-
-
 }

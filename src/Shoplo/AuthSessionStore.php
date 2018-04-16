@@ -12,16 +12,16 @@ namespace Shoplo;
 class AuthSessionStore extends AuthStoreAbstract
 {
     private $oauth_token,
-            $oauth_token_secret,
-            $authorized;
+        $oauth_token_secret,
+        $authorized;
 
     public function authorize($token = null, $tokenSecret = null)
     {
-        if ( !is_null($token) )
-        {
+        if (!is_null($token)) {
             $this->oauth_token = $token;
             $this->oauth_token_secret = $tokenSecret;
             $this->authorized = true;
+
             return true;
         }
         $this->authorized = false;
