@@ -58,19 +58,13 @@ class Resource
         $uri = '/services/'.$uri;
 
         $method = $request;
-        $body = [];
-        $body = $fields;
-
-//        if ($method == OAUTH_HTTP_METHOD_POST || $method == OAUTH_HTTP_METHOD_PUT) {
-//            $body = http_build_query($fields);
-//        }
 
         try {
             if (!$this->client instanceof ShoploStoreAdapterInterface) {
                 throw new ShoploException("No authorisation");
             }
 
-            $result = $this->client->fetch($this->api_url.$uri, $body, $method);
+            $result = $this->client->fetch($this->api_url.$uri, $fields, $method);
         } catch (\Exception $e) {
             throw new AuthException($e->getMessage());
         }
