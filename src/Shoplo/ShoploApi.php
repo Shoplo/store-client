@@ -196,6 +196,8 @@ class ShoploApi
         $this->shoploStoreAdapterInterface = new GuzzleAdapter(
             new \GuzzleHttp\Client(['base_uri' => $this->api_url])
         );
+
+        $this->initSSOAuthClient($config);
     }
 
     /**

@@ -23,7 +23,6 @@ $config = [
 ];
 
 $shoploApi = new Shoplo\ShoploApi($config);
-$shoploApi->initSSOAuthClient($config);
 
 if (!$shoploApi->authorized) {
     if (isset($_GET['code']) && isset($_GET['app_id'])) {
