@@ -95,7 +95,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 $url,
                 [
                     'headers' => $headers,
-                    'query' => $data,
+                    'query' => http_build_query($data),
                 ]
             );
 
@@ -122,7 +122,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 $url,
                 [
                     'headers' => $headers,
-                    'query' => $data,
+                    'query' => http_build_query($data),
                 ]
             );
 
