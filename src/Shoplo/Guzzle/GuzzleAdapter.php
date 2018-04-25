@@ -150,7 +150,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 ]
             );
 
-            $json = \GuzzleHttp\json_decode($rsp->getBody(), true);
+            $json = json_decode($rsp->getBody(), true);
 
             return $json;
         } catch (\Exception $e) {
