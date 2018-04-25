@@ -99,7 +99,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 ]
             );
 
-            return $rsp->getBody()->getContents();
+            return json_decode($rsp->getBody()->getContents(), true);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -126,7 +126,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 ]
             );
 
-            return $rsp->getBody()->getContents();
+            return json_decode($rsp->getBody()->getContents(), true);
         } catch (\Exception $e) {
             throw $e;
         }
