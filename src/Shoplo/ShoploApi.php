@@ -116,6 +116,11 @@ class ShoploApi
     public $webhook;
 
     /**
+     * @var Payment
+     */
+    public $payment;
+
+    /**
      * @var Page
      */
     public $page;
@@ -241,6 +246,7 @@ class ShoploApi
         $this->shop = new Shop($client, $this->api_url);
         $this->webhook = new Webhook($client, $this->api_url);
         $this->theme = new Theme($client, $this->api_url);
+        $this->payment = new Payment($client, $this->api_url);
         $this->page = new Page($client, $this->api_url);
         $this->shipping = new Shipping($client, $this->api_url);
         $this->checkout = new Checkout($client, $this->api_url);
