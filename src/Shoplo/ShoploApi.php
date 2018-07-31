@@ -160,6 +160,11 @@ class ShoploApi
      */
     public $transaction;
 
+    /**
+     * @var CartsDiscount
+     */
+    public $carts_discount;
+
     public $api_url;
 
     /**
@@ -261,6 +266,7 @@ class ShoploApi
         $this->application_charge = new ApplicationCharge($client, $this->api_url);
         $this->recurring_application_charge = new RecurringApplicationCharge($client, $this->api_url);
         $this->transaction = new Transaction($client, $this->api_url);
+        $this->carts_discount = new CartsDiscount($client, $this->api_url);
     }
 
     public function authorize($token, $tokenSecret)
@@ -364,5 +370,6 @@ class ShoploApi
         unset($this->application_charge);
         unset($this->recurring_application_charge);
         unset($this->transaction);
+        unset($this->carts_discount);
     }
 }
