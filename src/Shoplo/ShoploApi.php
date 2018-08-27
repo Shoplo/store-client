@@ -165,6 +165,11 @@ class ShoploApi
      */
     public $carts_discount;
 
+    /**
+     * @var ThemeScript
+     */
+    public $theme_script;
+
     public $api_url;
 
     /**
@@ -267,6 +272,7 @@ class ShoploApi
         $this->recurring_application_charge = new RecurringApplicationCharge($client, $this->api_url);
         $this->transaction = new Transaction($client, $this->api_url);
         $this->carts_discount = new CartsDiscount($client, $this->api_url);
+        $this->theme_script = new ThemeScript($client, $this->api_url);
     }
 
     public function authorize($token, $tokenSecret)
