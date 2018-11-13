@@ -30,7 +30,7 @@ class Cart extends Resource
     {
         $params = $this->prepare_params($params);
 
-        return empty($params) ? $this->send("cart/count") : $this->send("cart/count?".$params);
+        return empty($params) ? $this->send("carts/count") : $this->send("carts/count?".$params);
     }
 
     public function create($fields)
