@@ -1,12 +1,18 @@
 {
     "name": "shoplo/store-client",
-    "version": "1.0",
+    "license": "MIT",
+    "homepage": "https://www.shoplo.com",
     "autoload": {
         "psr-0": {
             "Shoplo": "src/"
         }
     },
     "require": {
-        "shoplo/sso-auth": "dev-master"
+        "shoplo/sso-auth": "^1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
