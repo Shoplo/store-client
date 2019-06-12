@@ -47,7 +47,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
             : [
                 'Authorization' => "Bearer {$this->accessToken}",
                 'app-id' => $this->ssoAppId,
-                'Content-Type' => 'application/json; charset=utf-8',
+                'Content-Type' => 'application/x-www-form-urlencoded request; charset=utf-8',
             ];
     }
 
@@ -95,7 +95,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 $url,
                 [
                     'headers' => $headers,
-                    'query' => http_build_query($data),
+                    'form_params' => $data,
                 ]
             );
 
@@ -122,7 +122,7 @@ class GuzzleAdapter implements ShoploStoreAdapterInterface
                 $url,
                 [
                     'headers' => $headers,
-                    'query' => http_build_query($data),
+                    'form_params' => $data,
                 ]
             );
 
