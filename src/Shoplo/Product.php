@@ -6,7 +6,7 @@ class Product extends Resource
 {
     public function retrieve($id = 0, $collection_id = 0, $category_id = 0, $params = array(), $cache = false)
     {
-        if ($id == 0) {
+        if ($id === 0) {
             if (!$cache || !isset($this->bucket['product'])) {
                 $params = $this->prepare_params($params);
                 $result = empty($params) ? $this->send($this->prefix."products") : $this->send(

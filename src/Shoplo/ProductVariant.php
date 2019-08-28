@@ -6,7 +6,7 @@ class ProductVariant extends Resource
 {
     public function retrieve($productId = 0, $variantId = 0, $params = array(), $cache = false)
     {
-        if ($variantId == 0) {
+        if ($variantId === 0) {
             if (!$cache || !isset($this->bucket['variant'])) {
                 $params = $this->prepare_params($params);
                 $result = empty($params) ? $this->send($this->prefix."/variants/".$productId) : $this->send(
@@ -16,7 +16,7 @@ class ProductVariant extends Resource
             }
 
             return $this->bucket['variant'];
-        } elseif ($variantId && $productId == 0) {
+        } elseif ($variantId && $productId === 0) {
             if (!$cache || !isset($this->bucket['variant'][$variantId])) {
                 $result = $this->send($this->prefix."/variant/".$variantId);
                 $this->bucket['variant'][$variantId] = $this->prepare_result($result);
