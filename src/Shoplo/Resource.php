@@ -73,6 +73,9 @@ class Resource
             if ($result['error'] == '202') #Authorize error - need generate new access token
             {
                 throw new AuthException($result['error_msg']);
+            }elseif ($result['error'] == '251') #Authorize error - need generate new access token
+            {
+                throw new TokenExpiredException($result['error_msg']);
             }
             throw new ShoploException($result['error_msg']);
         }
