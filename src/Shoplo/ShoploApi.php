@@ -313,6 +313,23 @@ class ShoploApi
         return $response;
     }
 
+    public function refreshToken($refreshToken)
+    {
+        $response = $this->ssoAuthClient->refreshToken($refreshToken);
+
+        $this->auth_store->setAuthorizeData($response['access_token'], $response['refresh_token']);
+
+        $this->oauth_token = $response['access_token'];
+        $this->oauth_token_secret = $response['refresh_token'];
+
+        $this->shoploStoreAdapterInterface->setSSOAppId($_GET['app_id']);
+        $this->shoploStoreAdapterInterface->setAccessToken(
+            $response['access_token']
+        );
+
+        return $response;
+    }
+
     /**
      * @param null $token
      * @param null $appId
