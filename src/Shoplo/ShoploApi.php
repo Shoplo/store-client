@@ -322,7 +322,6 @@ class ShoploApi
         $this->oauth_token = $response['access_token'];
         $this->oauth_token_secret = $response['refresh_token'];
 
-        $this->shoploStoreAdapterInterface->setSSOAppId($_GET['app_id']);
         $this->shoploStoreAdapterInterface->setAccessToken(
             $response['access_token']
         );
