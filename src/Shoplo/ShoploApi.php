@@ -197,7 +197,7 @@ class ShoploApi
             throw new ShoploException('Invalid Callback Url');
         }
 
-        $this->api_url = !empty($config['apiBaseUrl']) ? $config['apiBaseUrl'] : 'http://api.shoplo.com';
+        $this->api_url = !empty($config['apiBaseUrl']) ? $config['apiBaseUrl'] : 'https://api.shoplo.com';
 
         $this->api_key = $config['publicKey'];
         $this->secret_key = $config['secretKey'];
