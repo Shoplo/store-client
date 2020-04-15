@@ -18,7 +18,8 @@ class ProductVariant extends Resource
             return $this->bucket['variant'];
         } elseif ($variantId && $productId === 0) {
             if (!$cache || !isset($this->bucket['variant'][$variantId])) {
-                $result = $this->send($this->prefix."/variant/".$variantId);
+                $params = $this->prepare_params($params);
+                $result = $this->send($this->prefix."/variant/".$variantId."?".$params);
                 $this->bucket['variant'][$variantId] = $this->prepare_result($result);
             }
 
