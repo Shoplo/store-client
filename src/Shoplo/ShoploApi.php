@@ -21,7 +21,7 @@ class ShoploApi
     private $secret_key;
 
     /**
-     * @var ShoploAuthStore
+     * @var \Shoplo\AuthStore
      */
     private $auth_store;
 
