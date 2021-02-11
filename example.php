@@ -16,8 +16,8 @@ define('CALLBACK_URL', 'http://127.0.0.1/store-client/example.php');
 $accessToken = $refreshToken = null;
 
 $config = [
-    'apiBaseUrl' => 'http://api.shoplo.io',
-    'authBaseUrl' => 'http://auth.shoplo.io',
+    'apiBaseUrl' => 'https://api.shoplo.com',
+    'authBaseUrl' => 'https://auth.shoplo.com',
     'publicKey' => PUBLIC_KEY,
     'secretKey' => SECRET_KEY,
     'callbackUrl' => CALLBACK_URL,
@@ -66,9 +66,9 @@ if (!$shoploApi->authorized) {
                 'collection'        =>  array('Zdrowa żywność'),
                 'tags'              =>  'penne,makaron,zdrowy'
             );
-            $shoploApi->product->modify(96, ['title' => 'penne2']);
+//            $shoploApi->product->modify(96, ['title' => 'penne2']);
 //            $data = $shoploApi->product->remove(95);
-            $data = $shoploApi->product->retrieve(96);
+            $data = $shoploApi->product->retrieve();
             echo '<pre>';
             print_r($data);
             echo '</pre>';
