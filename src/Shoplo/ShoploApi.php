@@ -11,32 +11,32 @@ define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 class ShoploApi
 {
     /**
-     * @var String
+     * @var string
      */
     private $api_key;
 
     /**
-     * @var String
+     * @var string
      */
     private $secret_key;
 
     /**
-     * @var ShoploAuthStore
+     * @var \Shoplo\AuthStore
      */
     private $auth_store;
 
     /**
-     * @var String
+     * @var string
      */
     private $oauth_token;
 
     /**
-     * @var String
+     * @var string
      */
     private $oauth_token_secret;
 
     /**
-     * @var Boolean
+     * @var boolean
      */
     public $authorized = false;
 
@@ -173,7 +173,7 @@ class ShoploApi
     public $api_url;
 
     /**
-     * @var String
+     * @var string
      */
     public $shop_domain = null;
 
@@ -182,6 +182,9 @@ class ShoploApi
      */
     private $ssoAuthClient;
 
+    /**
+     * @var GuzzleAdapter
+     */
     private $shoploStoreAdapterInterface;
 
     public function __construct($config, $authStore = null, $disableSession = false)
@@ -221,7 +224,7 @@ class ShoploApi
     }
 
     /**
-     * @param $config
+     * @param array $config
      */
     public function initSSOAuthClient($config)
     {
@@ -238,6 +241,9 @@ class ShoploApi
         );
     }
 
+    /**
+     * @return string
+     */
     public function getAuthorizeUrl()
     {
         return $this->api_url.'/services/oauth/authorize';

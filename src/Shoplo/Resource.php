@@ -6,6 +6,9 @@ use Shoplo\ShoploStoreAdapterInterface;
 
 class Resource
 {
+    /**
+     * @var \Shoplo\ShoploStoreAdapterInterface
+     */
     protected $client;
     protected $bucket = array();
     protected $prefix = '';
@@ -22,6 +25,10 @@ class Resource
         $this->api_url = $apiUrl;
     }
 
+    /**
+     * @param array $params
+     * @return false|string
+     */
     protected function prepare_params($params)
     {
         $string = '';
@@ -37,6 +44,10 @@ class Resource
         return $string;
     }
 
+    /**
+     * @param array $result
+     * @return array
+     */
     protected function prepare_result($result)
     {
         if (!is_array($result)) {
